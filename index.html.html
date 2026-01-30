@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sembremos Pensamientos Útiles</title>
+    <style>
+        :root { --primary: #1e3c72; --secondary: #2a5298; --accent: #f39c12; --success: #27ae60; }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); 
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 20px; color: #333;
+        }
+        .contenedor { 
+            background: white; padding: 40px; border-radius: 40px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); 
+            max-width: 700px; width: 100%; text-align: center; border-top: 8px solid var(--accent); position: relative;
+        }
+        h1 { color: var(--primary); margin: 0; font-size: 2.2em; letter-spacing: -1px; }
+        .eslogan { 
+            background: #fff9f0; color: #d35400; display: inline-block; padding: 5px 20px; 
+            border-radius: 50px; font-weight: bold; font-style: italic; margin-top: 10px; border: 1px solid #ffeaa7;
+        }
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .carta-bienvenida {
+            background: white; padding: 30px; border-radius: 30px; max-width: 500px; text-align: left; line-height: 1.6;
+        }
+        .stats-rapidas { display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 20px; margin: 20px 0; }
+        .caja-botones { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 25px; }
+        .btn-accion { width: 130px; padding: 15px; border: none; border-radius: 15px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .seccion-tablon { background: #fff; padding: 20px; border-radius: 25px; border: 2px solid #f1c40f; }
+        .muro { max-height: 300px; overflow-y: auto; margin-top: 15px; }
+        .burbuja { background: #fdfdfd; padding: 15px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; border-left: 6px solid var(--accent); text-align: left;}
+        .btn-regalo { background: #e74c3c; color: white; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; }
+        .btn-entendido { background: var(--primary); color: white; width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div id="overlay">
+    <div class="carta-bienvenida">
+        <h2 style="color: var(--primary); margin-top: 0;">💌 Carta de Bienvenida</h2>
+        <p>Bienvenido a <strong>Sembremos Pensamientos Útiles</strong>.</p>
+        <p>Esta no es una red social común. Aquí las personas no tienen precio; tienen valor. El mundo avanza gracias a personas honestas y consecuentes como tú.</p>
+        <button class="btn-entendido" onclick="cerrarBienvenida()">Empezar a Sembrar</button>
+    </div>
+</div>
+
+<div class="contenedor">
+    <h1>Sembremos Pensamientos Útiles</h1>
+    <span class="eslogan">"Blockchain Humana de Valores"</span>
+    
+    <div style="font-size: 0.85em; color: #576574; margin-top: 15px; font-style: italic;">
+        "Los pensamientos, los dejamos sembrados cada día, como las flores, como la fruta, como el amor por el prójimo..."
+    </div>
+
+    <div class="stats-rapidas">
+        <div><strong id="stat-monedas">0</strong><br><small>Monedas S.Ú.</small></div>
+        <div><strong id="stat-esperanzas">0</strong><br><small>Esperanzas</small></div>
+    </div>
+
+    <div class="caja-botones">
+        <button class="btn-accion" style="background:#f1c40f; color:black;" onclick="registrar('Taxi')">🚕 Taxi</button>
+        <button class="btn-accion" style="background:#9b59b6;" onclick="registrar('Enseñar')">📚 Enseñar</button>
+        <button class="btn-accion" style="background:#27ae60;" onclick="registrar('Deporte')">⚽ Deporte</button>
+        <button class="btn-accion" style="background:#e67e22;" onclick="registrar('IA')">🤖 IA</button>
+    </div>
+
+    <div class="seccion-tablon">
+        <h3 style="margin:0; color:var(--primary);">📢 Tablón de Semillas</h3>
+        <input type="text" id="autorMsg" placeholder="Tu nombre..." style="width: 80%; padding: 8px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+        <textarea id="textoMsg" placeholder="¿Qué semilla de esperanza plantaste hoy?" style="width: 80%; height: 50px; padding: 8px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
+        <button onclick="publicarMensaje()" style="background:var(--accent); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; width: 85%;">Publicar en la Red</button>
+        <div id="muroMensajes" class="muro"></div>
+    </div>
+
+    <button class="btn-regalo" onclick="regalarCodigo()">🎁 REGALAR ESTE PROYECTO AL MUNDO</button>
+    
+    <div style="margin-top: 15px;">
+        <button onclick="hacerCopiaSeguridad()" style="background: none; border: none; color: #7f8c8d; cursor: pointer; text-decoration: underline; font-size: 0.8em;">Guardar mis datos personales</button>
+    </div>
+</div>
+
+<script>
+    let hucha = parseInt(localStorage.getItem("saldo_semillas")) || 0;
+    let mensajesComunidad = JSON.parse(localStorage.getItem("mensajes_semillas")) || [];
+
+    function cerrarBienvenida() { document.getElementById('overlay').style.display = 'none'; }
+
+    function actualizarPantalla() {
+        document.getElementById("stat-monedas").innerText = hucha;
+        document.getElementById("stat-esperanzas").innerText = mensajesComunidad.length;
+        const muro = document.getElementById("muroMensajes");
+        muro.innerHTML = "";
+        mensajesComunidad.forEach((m) => {
+            muro.innerHTML = `<div class="burbuja"><strong>${m.autor}:</strong> ${m.texto}<br><small style="color: #bdc3c7">${m.fecha}</small></div>` + muro.innerHTML;
+        });
+    }
+
+    function registrar(tipo) {
+        hucha += 10;
+        localStorage.setItem("saldo_semillas", hucha);
+        actualizarPantalla();
+    }
+
+    function publicarMensaje() {
+        let autor = document.getElementById("autorMsg").value;
+        let texto = document.getElementById("textoMsg").value;
+        if (!autor || !texto) return;
+        mensajesComunidad.push({ autor, texto, fecha: new Date().toLocaleString() });
+        localStorage.setItem("mensajes_semillas", JSON.stringify(mensajesComunidad));
+        document.getElementById("autorMsg").value = "";
+        document.getElementById("textoMsg").value = "";
+        actualizarPantalla();
+    }
+
+    function hacerCopiaSeguridad() {
+        const datos = { hucha, mensajesComunidad };
+        const blob = new Blob([JSON.stringify(datos)], { type: 'application/json' });
+        const enlace = document.createElement('a');
+        enlace.download = `Mis_Semillas_Vicente.json`;
+        enlace.href = window.URL.createObjectURL(blob);
+        enlace.click();
+    }
+
+    function regalarCodigo() {
+        const codigo = document.documentElement.outerHTML;
+        const blob = new Blob([codigo], { type: 'text/html' });
+        const enlace = document.createElement('a');
+        enlace.download = 'index.html';
+        enlace.href = window.URL.createObjectURL(blob);
+        enlace.click();
+        alert("¡Código descargado! Ya puedes regalarlo.");
+    }
+
+    actualizarPantalla();
+</script>
+</body>
+</html>
